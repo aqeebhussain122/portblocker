@@ -8,8 +8,10 @@ from collections import Counter
 def get_lines(keyword):
 	log_lines = []
 	time_list = []
-	with open("/var/log/messages", encoding="utf-8") as log:
-		if os.stat("/var/log/messages").st_size < 10:
+	# Changes made via rsyslog to create a new log file using the 
+	with open("/var/log/iptables.log", encoding="utf-8") as log:
+		# If the file size of the log is too small.
+		if os.stat("/var/log/iptables.log").st_size < 10:
 			sys.exit("Log is empty right now")
 		for line in log:
 			if keyword in line:
@@ -78,9 +80,9 @@ def get_lines(keyword):
 
 # Compares the two timestamps.
 # https://stackoverflow.com/questions/4002598/how-to-get-the-previous-element-when-using-a-for-loop
+
+# Detect connected IP addresses and block anything which is sending a large volume of packets
 def detect_and_block():
-	# Counter of how many times an IP has appeared
-	counter = 0
 	# Primary list which logs the found IPs and try to attach the number of times they appeared in 5 minutes
 	found_ips = []
 	# IP addresses to be blocked
@@ -127,19 +129,15 @@ def detect_and_block():
 		print("Unblocking device... ")
 		# Delete the IP which was being blocked.
 		os.system("iptables -D INPUT -s {} -j DROP".format(found_ips[i]))
-		#print("Restarting IPTables.")
-		#os.system("systemctl restart iptables")
 		
 	# Wipe the log file to add more data, just for testing.
 	print("Wiping log file")
-	os.system("echo > /var/log/messages")
-
+	os.system("echo > /var/log/iptables.log")
 
 
 	#https://codefather.tech/blog/python-check-for-duplicates-in-list/
 	#for i in range(len(get_times)):
 		# Bind the apperance of the same IP address with a counter.
-  # Old approach involving the use of ipset rulesets, may come in handy later.
 	"""
 	for i in range(len(get_times)):
 		counter += 1
