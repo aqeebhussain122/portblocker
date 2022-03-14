@@ -1,2 +1,2 @@
 # portblocker
-Intrusion Prevention System designed for Linux based Infrastructures
+Prototype Intrusion Prevention System designed for Linux based Infrastructures
