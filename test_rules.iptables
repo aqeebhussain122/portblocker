@@ -6,13 +6,14 @@
 # Allow loopback services to talk to each other
 -A INPUT -i lo -j ACCEPT
 # Don't trouble any related or established SSH sessions 
-# Log large volimes of packets coming towards the SSH server.in the form of port scan
+# Log large volumes of packets coming towards the SSH server.in the form of port scan
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -p tcp -m limit --limit 100/min -m tcp --dport 22 -j LOG --log-prefix "<IPT> SSH port: "
+# Open a select number of ports.
 -A INPUT -p tcp --dport 21 -i ens33 -j ACCEPT
 -A INPUT -p tcp --dport 22 -i ens33 -j ACCEPT
 -A INPUT -p tcp --dport 8080 -i ens33 -j ACCEPT
-# The killer rule to wrap up all the restrictions
+# The killer rule to restrict everything else. Make sure to open SSH before writing this rule or else you will end up locking yourself out. 
 #-A INPUT -p tcp -j DROP
 
 COMMIT
